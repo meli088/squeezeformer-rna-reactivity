@@ -1,34 +1,34 @@
 # Squeezeformer RNA Reactivity Prediction
 
-Pipeline de pretraitement, entrainement et inference pour predire la reactivite RNA (DMS_MaP et 2A3_MaP) avec une architecture Squeezeformer simplifiee + features BPPM.
+Notebook-based pipeline for RNA reactivity prediction (DMS_MaP and 2A3_MaP) using a lightweight Squeezeformer architecture with BPPM structural features.
 
-## Pourquoi ce projet
-Ce repository regroupe une version experimentale orientee notebook pour:
-- transformer les donnees brutes RNA en tenseurs exploitables,
-- entrainer un modele sequence + structure secondaire (BPPM),
-- produire des predictions test au format soumission.
+## Project Overview
+This repository contains an experimental, reproducible baseline to:
+- convert raw RNA data into training tensors,
+- train a sequence + secondary-structure model,
+- generate test predictions in submission-ready CSV format.
 
-L'objectif est d'avoir une base reproductible, lisible et evolutive pour des experiences de modelisation RNA.
+The goal is to provide a clear starting point for RNA modeling experiments that can later be refactored into a full production codebase.
 
-## Contenu actuel
-- `Squeezeformer_lightver_MFARSHCHI.ipynb`: notebook principal (preprocessing -> split -> modele -> train -> inference).
+## Current Contents
+- `Squeezeformer_lightver_MFARSHCHI.ipynb`: main notebook (preprocessing -> split -> model -> training -> inference).
 
-## Pipeline (vue rapide)
-1. Lecture et filtrage de `train_data.csv` (option `SN_filter`).
-2. Construction des labels de reactivite multi-canaux `Y` (DMS, 2A3) + masque `W_pos`.
-3. Encodage des sequences RNA (`A/C/G/U`, padding/troncature a `MAX_LEN=206`).
-4. Chargement des matrices BPPM en mode bande locale (`band`, largeur 41 par defaut).
-5. Split train/validation stratifie (longueur x couverture).
-6. Entrainement d'un Squeezeformer-lite fusionnant sequence et BPPM.
-7. Inference sur test et export CSV.
+## Pipeline Summary
+1. Read and filter `train_data.csv` (optional `SN_filter`).
+2. Build multi-channel reactivity targets `Y` (DMS, 2A3) and position mask `W_pos`.
+3. Encode RNA sequences (`A/C/G/U`) with padding/truncation to `MAX_LEN=206`.
+4. Load BPPM files in local band mode (`band`, width 41 by default).
+5. Build a stratified train/validation split (length x coverage).
+6. Train a Squeezeformer-lite model that fuses sequence and BPPM features.
+7. Run test inference and export CSV predictions.
 
-## Structure des donnees attendue
-Place les fichiers de donnees a la racine du repo (ou adapte les chemins dans le notebook):
+## Expected Data Layout
+Put input data at the repository root (or update paths in the notebook):
 
 - `train_data.csv`
 - `test_sequences.csv`
-- `sample_submission.csv` (optionnel mais recommande pour aligner le format final)
-- `Ribonanza_bpp_files/extra_data/*.txt` (fichiers BPP)
+- `sample_submission.csv` (optional but recommended for output alignment)
+- `Ribonanza_bpp_files/extra_data/*.txt` (BPP files)
 
 ## Installation
 ```bash
@@ -37,38 +37,26 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Execution
-1. Ouvrir `Squeezeformer_lightver_MFARSHCHI.ipynb`.
-2. Executer les cellules dans l'ordre.
-3. Verifier les artefacts dans `cache/`.
+## How to Run
+1. Open `Squeezeformer_lightver_MFARSHCHI.ipynb`.
+2. Run cells in order.
+3. Check generated artifacts in `cache/`.
 
-## Sorties generees
-Le notebook ecrit notamment:
+## Generated Outputs
+The notebook writes, among others:
 - `cache/dataset_npz_band.npz`
 - `cache/dataset_manifest_band.json`
 - `cache/split_indices_band.json`
-- `cache/predictions_test.csv` (et/ou `cache/predictions2_test.csv` selon la cellule utilisee)
+- `cache/predictions_test.csv` (and/or `cache/predictions2_test.csv` depending on the inference cell)
 
-## Resultats (run exemple present dans le notebook)
-Sur une execution de demonstration visible dans les sorties du notebook (subset configure), on observe:
-- `val_masked_mae` autour de `0.1911` (epoch 8/20)
+## Example Result (from notebook outputs)
+From the demonstration run currently visible in notebook outputs (subset configuration):
+- `val_masked_mae` around `0.1911` at epoch 8/20
 
-Ces valeurs servent de point de depart et doivent etre confirmees sur un run complet avec callbacks actifs.
+This is a baseline indicator and should be confirmed with a full run using active callbacks.
 
-## Limites actuelles
-- Code concentre dans un unique notebook (pas encore package en scripts/modules).
-- Peu de tests automatiques.
-- Parametres encore partiellement hardcodes dans les cellules.
+## Author
+Maintained by Melina.
 
-## Roadmap pour un repo encore plus pro
-- Extraire le code en modules Python (`src/`) + scripts CLI (`train.py`, `predict.py`).
-- Ajouter un fichier de config (`yaml`) pour les hyperparametres.
-- Versionner les experiences (ex: MLflow/W&B).
-- Ajouter des tests unitaires pour preprocessing et masques.
-- Ajouter CI GitHub Actions (lint + tests).
-
-## Auteur
-Projet maintenu par Melin.
-
-## Licence
-A definir (MIT recommande pour un projet ouvert).
+## License
+To be defined (MIT is a good default for open-source use).
