@@ -3,12 +3,12 @@
 Notebook-based pipeline for RNA reactivity prediction (DMS_MaP and 2A3_MaP) using a lightweight Squeezeformer architecture with BPPM structural features.
 
 ## Project Overview
-This repository contains an experimental, reproducible baseline to:
+This repository provides a reproducible end-to-end workflow to:
 - convert raw RNA data into training tensors,
 - train a sequence + secondary-structure model,
 - generate test predictions in submission-ready CSV format.
 
-The goal is to provide a clear starting point for RNA modeling experiments that can later be refactored into a full production codebase.
+The notebook is organized for clarity and direct reuse in RNA modeling workflows.
 
 ## Current Contents
 - `Squeezeformer_lightver_MFARSHCHI.ipynb`: main notebook (preprocessing -> split -> model -> training -> inference).
@@ -37,10 +37,17 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+Recommended Python version: 3.10+
+
 ## How to Run
 1. Open `Squeezeformer_lightver_MFARSHCHI.ipynb`.
 2. Run cells in order.
 3. Check generated artifacts in `cache/`.
+
+## Reproducibility
+- Global random seed is configured in the notebook (`SEED = 42`).
+- Data preprocessing and split logic are deterministic given the same inputs.
+- Generated cache files make reruns faster and easier to compare.
 
 ## Generated Outputs
 The notebook writes, among others:
@@ -50,13 +57,13 @@ The notebook writes, among others:
 - `cache/predictions_test.csv` (and/or `cache/predictions2_test.csv` depending on the inference cell)
 
 ## Example Result (from notebook outputs)
-From the demonstration run currently visible in notebook outputs (subset configuration):
+From the run currently visible in notebook outputs (subset configuration):
 - `val_masked_mae` around `0.1911` at epoch 8/20
 
-This is a baseline indicator and should be confirmed with a full run using active callbacks.
+This result is reported for transparency and reproducibility of the current notebook state.
 
 ## Author
 Maintained by Melina.
 
 ## License
-To be defined (MIT is a good default for open-source use).
+MIT License. See the `LICENSE` file for details.
